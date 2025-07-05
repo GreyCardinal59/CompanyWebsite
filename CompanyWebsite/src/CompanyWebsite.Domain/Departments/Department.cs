@@ -1,4 +1,6 @@
-﻿namespace CompanyWebsite.Domain.Entities;
+﻿using CompanyWebsite.Domain.Employees;
+
+namespace CompanyWebsite.Domain.Departments;
 
 public class Department
 {
