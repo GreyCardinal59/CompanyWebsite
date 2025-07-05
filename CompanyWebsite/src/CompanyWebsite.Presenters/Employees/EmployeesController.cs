@@ -1,16 +1,18 @@
-using CompanyWebsite.Contracts;
+using CompanyWebsite.Application.Employees;
+using CompanyWebsite.Contracts.Employees;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CompanyWebsite.Presenters;
+namespace CompanyWebsite.Presenters.Employees;
 
 [ApiController]
 [Route("[controller]")]
-public class EmployeesController : ControllerBase
+public class EmployeesController(IEmployeesService employeesService) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateEmployeeDto employeeDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create([FromBody] CreateEmployeeDto request, CancellationToken cancellationToken)
     {
-        return Ok("Employee created");
+       var employeeId = await employeesService.Create(request, cancellationToken);
+       return Ok(employeeId);
     }
 
     [HttpGet]
