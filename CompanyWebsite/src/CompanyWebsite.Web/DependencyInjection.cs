@@ -1,4 +1,5 @@
 ﻿using CompanyWebsite.Application;
+using CompanyWebsite.Infrastructure.Mssql;
 
 namespace CompanyWebsite.Web;
 
@@ -7,7 +8,8 @@ public static class DependencyInjection
     public static IServiceCollection AddProgramDependencies(this IServiceCollection services) => 
         services
             .AddWebDependencies()
-            .AddApplication();
+            .AddApplication()
+            .AddMssqlInfrastructure();
     
     private static IServiceCollection AddWebDependencies(this IServiceCollection services)
     { 
