@@ -1,7 +1,10 @@
-﻿using CompanyWebsite.Contracts.Employees;
+﻿using CompanyWebsite.Application.Employees.Exceptions;
+using CompanyWebsite.Application.Extensions;
+using CompanyWebsite.Contracts.Employees;
 using CompanyWebsite.Domain.Employees;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using Shared;
 
 namespace CompanyWebsite.Application.Employees;
 
@@ -16,10 +19,16 @@ public class EmployeesService(
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            throw new ValidationException(validationResult.Errors);
+           throw new EmployeeValidationException(validationResult.ToErrors());
         }
-
+        
         // Валидация бизнес-логики
+        // int todoCase = 1;
+        //
+        // if (todoCase == 1)
+        // {
+        //     throw new TODOException();
+        // }
 
         // Создание сущности
         var employeeId = Guid.NewGuid();
