@@ -5,8 +5,12 @@ namespace Shared;
 public record Error
 {
     public string Code { get; }
+    
     public string Message { get; }
+    
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public ErrorType Type { get; }
+    
     public string? InvalidField { get; }
 
     [JsonConstructor]
@@ -29,6 +33,8 @@ public record Error
     
     public static Error Conflict(string? code, string message) 
         => new(code ?? "value.is.conflict", message, ErrorType.CONFLICT);
+
+    public Failure ToFailure() => this;
 }
 
 public enum ErrorType
