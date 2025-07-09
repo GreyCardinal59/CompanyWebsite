@@ -1,4 +1,5 @@
 ﻿using CompanyWebsite.Infrastructure.Mssql;
+using CompanyWebsite.Infrastructure.Mssql.Seeders;
 
 namespace CompanyWebsite.Web;
 

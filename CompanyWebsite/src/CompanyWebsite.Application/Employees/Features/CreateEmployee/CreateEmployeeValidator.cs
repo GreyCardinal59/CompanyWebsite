@@ -1,7 +1,8 @@
 ﻿using CompanyWebsite.Contracts.Employees;
+using CompanyWebsite.Contracts.Employees.Dtos;
 using FluentValidation;
 
-namespace CompanyWebsite.Application.Employees;
+namespace CompanyWebsite.Application.Employees.Features.CreateEmployee;
 
 public class CreateEmployeeValidator : AbstractValidator<CreateEmployeeDto>
 {

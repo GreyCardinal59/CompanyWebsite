@@ -1,4 +1,4 @@
-﻿namespace CompanyWebsite.Infrastructure.Mssql;
+﻿namespace CompanyWebsite.Infrastructure.Mssql.Seeders;
 
 public interface ISeeder
 {
