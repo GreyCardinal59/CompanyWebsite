@@ -66,3 +66,7 @@ npm start
 - `CompanyWebsite.Presenters` - контроллеры API
 - `CompanyWebsite.Web` - "точка входа"
 - `client` - Angular клиент 
+
+## SQL-скрипты
+
+[Как запустить скрипты](https://github.com/GreyCardinal59/CompanyWebsite/blob/main/CompanyWebsite/sql-scripts-readme.md)
