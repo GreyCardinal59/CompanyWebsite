@@ -89,9 +89,9 @@
             <tr *ngFor="let employee of employees">
               <td>{{ employee.departmentName }}</td>
               <td>{{ employee.fullName }}</td>
-              <td>{{ employee.birthDate }}</td>
-              <td>{{ employee.hireDate }}</td>
-              <td>{{ employee.salary | currency:'RUB':'symbol':'1.0-0' }}</td>
+              <td>{{ employee.birthDate | date:'dd-MM-yyyy' }}</td>
+              <td>{{ employee.hireDate | date:'dd-MM-yyyy' }}</td>
+              <td>{{ employee.salary | number:'1.0-0' }} ₽</td>
               <td class="text-end">
                 <div class="btn-group">
                   <button class="btn btn-sm btn-outline-primary" (click)="openEditModal(employee)">
