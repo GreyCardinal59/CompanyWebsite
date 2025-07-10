@@ -19,14 +19,12 @@ public class CreateEmployeeHandler(
 {
     public async Task<Result<Guid, Failure>> Handle(CreateEmployeeCommand command, CancellationToken cancellationToken)
     {
-        // Валидация входных данных
         var validationResult = await validator.ValidateAsync(command.EmployeeDto, cancellationToken);
         if (!validationResult.IsValid)
         {
             return validationResult.ToErrors();
         }
         
-        // Валидация бизнес-логики
         Department department = null;
 
         if (!string.IsNullOrEmpty(command.EmployeeDto.NewDepartmentName))
@@ -54,8 +52,7 @@ public class CreateEmployeeHandler(
         {
             return Errors.Departments.Required().ToFailure();
         }
-
-        // Создание сущности
+        
         var employeeId = Guid.NewGuid();
 
         var employee = new Employee(
@@ -65,11 +62,9 @@ public class CreateEmployeeHandler(
             command.EmployeeDto.HireDate,
             command.EmployeeDto.Salary,
             department.Id);
-
-        // Сохранение в БД
+        
         await employeesRepository.AddAsync(employee, cancellationToken);
-
-        // Логирование (успех, ошибка)
+        
         logger.LogInformation("Employee created with id: {employeeId}", employeeId);
 
         return employeeId;

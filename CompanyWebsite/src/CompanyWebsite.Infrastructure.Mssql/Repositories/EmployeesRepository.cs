@@ -20,11 +20,6 @@ public class EmployeesRepository(EmployeesDbContext dbContext) : IEmployeesRepos
         return employee.Id;
     }
 
-    public async Task<Guid> UpdateAsync(Employee employee, CancellationToken cancellationToken)
-    {
-        return employee.Id;
-    }
-
     public async Task<Guid> SaveAsync(Employee employee, CancellationToken cancellationToken)
     {
         dbContext.Employees.Attach(employee);
@@ -35,6 +30,16 @@ public class EmployeesRepository(EmployeesDbContext dbContext) : IEmployeesRepos
 
     public async Task<Guid> DeleteAsync(Guid employeeId, CancellationToken cancellationToken)
     {
+        var employee = await dbContext.Employees.FindAsync(new object[] { employeeId }, cancellationToken);
+        
+        if (employee is null)
+        {
+            throw new EmployeeNotFoundException(employeeId);
+        }
+        
+        dbContext.Employees.Remove(employee);
+        await dbContext.SaveChangesAsync(cancellationToken);
+        
         return employeeId;
     }
 
@@ -75,4 +80,8 @@ public class EmployeesRepository(EmployeesDbContext dbContext) : IEmployeesRepos
         await dbContext.SaveChangesAsync(cancellationToken);
     }
     
+    public async Task<IEnumerable<Department>> GetAllDepartmentsAsync(CancellationToken cancellationToken)
+    {
+        return await dbContext.Departments.ToListAsync(cancellationToken);
+    }
 }

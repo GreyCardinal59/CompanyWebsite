@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong@Passw0rd
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    networks:
+      - company-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db;Database=company_website;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;
+      - ASPNETCORE_URLS=http://+:5296
+    ports:
+      - "5296:5296"
+    networks:
+      - company-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+      args:
+        - BUILDKIT_INLINE_CACHE=0
+    volumes:
+      - ./client/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - company-network
+
+    restart: unless-stopped
+
+networks:
+  company-network:
+    driver: bridge
+
+volumes:
+  mssql-data: 

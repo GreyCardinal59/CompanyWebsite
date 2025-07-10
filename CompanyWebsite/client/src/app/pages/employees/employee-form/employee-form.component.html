@@ -1,0 +1,106 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ employee ? 'Редактирование сотрудника' : 'Добавление сотрудника' }}</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label for="fullName" class="form-label">Ф.И.О</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        id="fullName" 
+        formControlName="fullName"
+        [class.is-invalid]="employeeForm.get('fullName')?.invalid && employeeForm.get('fullName')?.touched">
+      <div class="invalid-feedback" *ngIf="employeeForm.get('fullName')?.errors?.['required']">
+        Поле обязательно для заполнения
+      </div>
+      <div class="invalid-feedback" *ngIf="employeeForm.get('fullName')?.errors?.['maxlength']">
+        Максимальная длина - 100 символов
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="birthDate" class="form-label">Дата рождения</label>
+      <input 
+        type="date" 
+        class="form-control" 
+        id="birthDate" 
+        formControlName="birthDate"
+        [class.is-invalid]="employeeForm.get('birthDate')?.invalid && employeeForm.get('birthDate')?.touched">
+      <div class="invalid-feedback" *ngIf="employeeForm.get('birthDate')?.errors?.['required']">
+        Поле обязательно для заполнения
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="hireDate" class="form-label">Дата устройства на работу</label>
+      <input 
+        type="date" 
+        class="form-control" 
+        id="hireDate" 
+        formControlName="hireDate"
+        [class.is-invalid]="employeeForm.get('hireDate')?.invalid && employeeForm.get('hireDate')?.touched">
+      <div class="invalid-feedback" *ngIf="employeeForm.get('hireDate')?.errors?.['required']">
+        Поле обязательно для заполнения
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="salary" class="form-label">Заработная плата</label>
+      <input 
+        type="number" 
+        class="form-control" 
+        id="salary" 
+        formControlName="salary"
+        [class.is-invalid]="employeeForm.get('salary')?.invalid && employeeForm.get('salary')?.touched">
+      <div class="invalid-feedback" *ngIf="employeeForm.get('salary')?.errors?.['required']">
+        Поле обязательно для заполнения
+      </div>
+      <div class="invalid-feedback" *ngIf="employeeForm.get('salary')?.errors?.['min']">
+        Значение должно быть больше или равно 0
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <div class="form-check form-switch mb-2">
+        <input class="form-check-input" type="checkbox" id="departmentSwitch" (change)="toggleDepartmentType()">
+        <label class="form-check-label" for="departmentSwitch">
+          {{ isNewDepartment ? 'Создать новый отдел' : 'Выбрать существующий отдел' }}
+        </label>
+      </div>
+
+      <div *ngIf="!isNewDepartment">
+        <label for="departmentId" class="form-label">Отдел</label>
+        <select 
+          class="form-select" 
+          id="departmentId" 
+          formControlName="departmentId"
+          [class.is-invalid]="employeeForm.get('departmentId')?.invalid && employeeForm.get('departmentId')?.touched">
+          <option value="">Выберите отдел</option>
+          <option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</option>
+        </select>
+        <div class="invalid-feedback" *ngIf="employeeForm.get('departmentId')?.errors?.['required']">
+          Необходимо выбрать отдел
+        </div>
+      </div>
+
+      <div *ngIf="isNewDepartment">
+        <label for="newDepartmentName" class="form-label">Название нового отдела</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          id="newDepartmentName" 
+          formControlName="newDepartmentName"
+          [class.is-invalid]="employeeForm.get('newDepartmentName')?.invalid && employeeForm.get('newDepartmentName')?.touched">
+        <div class="invalid-feedback" *ngIf="employeeForm.get('newDepartmentName')?.errors?.['required']">
+          Необходимо указать название отдела
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Отмена</button>
+  <button type="button" class="btn btn-primary" (click)="onSubmit()">Сохранить</button>
+</div> 

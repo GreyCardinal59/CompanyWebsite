@@ -19,7 +19,7 @@ public static class DependencyInjection
     { 
         services.AddControllers().AddJsonOptions(options =>
         {
-            options.JsonSerializerOptions.Converters.Add(new DateTimeConverter("dd.MM.yyyy"));
+            options.JsonSerializerOptions.Converters.Add(new DateTimeConverter("yyyy-MM-dd", "dd.MM.yyyy"));
         });
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();

@@ -23,4 +23,6 @@ public interface IEmployeesRepository
     Task<Department?> GetDepartmentByIdAsync(Guid departmentId, CancellationToken cancellationToken);
     
     Task AddDepartmentAsync(Department department, CancellationToken cancellationToken);
+    
+    Task<IEnumerable<Department>> GetAllDepartmentsAsync(CancellationToken cancellationToken);
 }

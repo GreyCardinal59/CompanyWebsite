@@ -1,4 +1,5 @@
-﻿using CompanyWebsite.Application.Employees.Exceptions;
+﻿using CompanyWebsite.Application.Abstractions;
+using CompanyWebsite.Application.Employees.Exceptions;
 using CompanyWebsite.Application.Extensions;
 using CompanyWebsite.Contracts.Employees;
 using CompanyWebsite.Contracts.Employees.Dtos;
@@ -14,28 +15,28 @@ namespace CompanyWebsite.Application.Employees.Features.UpdateEmployee;
 public class UpdateEmployeeHandler(
     IEmployeesRepository employeesRepository,
     IValidator<UpdateEmployeeDto> updateEmployeeValidator,
-    ILogger<UpdateEmployeeHandler> logger)
+    ILogger<UpdateEmployeeHandler> logger) : ICommandHandler<Guid, UpdateEmployeeCommand>
 {
-    public async Task<Result<Employee, Failure>> Update(Guid employeeId, UpdateEmployeeDto request, CancellationToken cancellationToken)
+    public async Task<Result<Guid, Failure>> Handle(UpdateEmployeeCommand command, CancellationToken cancellationToken)
     {
-        var validationResult = await updateEmployeeValidator.ValidateAsync(request, cancellationToken);
+        var validationResult = await updateEmployeeValidator.ValidateAsync(command.UpdateEmployeeDto, cancellationToken);
         if (!validationResult.IsValid)
         {
             return validationResult.ToErrors();
         }
 
-        var employeeResult = await employeesRepository.GetByIdAsync(employeeId, cancellationToken);
+        var employeeResult = await employeesRepository.GetByIdAsync(command.EmployeeId, cancellationToken);
         if (employeeResult.IsFailure)
         {
             return employeeResult.Error;
         }
         
         var employee = employeeResult.Value;
-        Department department = null;
+        Department department = null!;
 
-        if (!string.IsNullOrEmpty(request.NewDepartmentName))
+        if (!string.IsNullOrEmpty(command.UpdateEmployeeDto.NewDepartmentName))
         {
-            var existingDepartment = await employeesRepository.GetDepartmentByNameAsync(request.NewDepartmentName, cancellationToken);
+            var existingDepartment = await employeesRepository.GetDepartmentByNameAsync(command.UpdateEmployeeDto.NewDepartmentName, cancellationToken);
             if (existingDepartment != null)
             {
                 return Errors.Departments.AlreadyExists().ToFailure();
@@ -43,28 +44,28 @@ public class UpdateEmployeeHandler(
             
             department = new Department(
                 Guid.NewGuid(),
-                request.NewDepartmentName);
+                command.UpdateEmployeeDto.NewDepartmentName);
             await employeesRepository.AddDepartmentAsync(department, cancellationToken);
         }
-        else if (request.DepartmentId.HasValue)
+        else if (command.UpdateEmployeeDto.DepartmentId.HasValue)
         {
-            department = await employeesRepository.GetDepartmentByIdAsync(request.DepartmentId.Value, cancellationToken);
+            department = await employeesRepository.GetDepartmentByIdAsync(command.UpdateEmployeeDto.DepartmentId.Value, cancellationToken);
             if (department == null)
             {
-                return Errors.General.NotFound(request.DepartmentId.Value).ToFailure();
+                return Errors.General.NotFound(command.UpdateEmployeeDto.DepartmentId.Value).ToFailure();
             }
         }
         
-        employee.FullName = request.FullName;
-        employee.BirthDate = request.BirthDate;
-        employee.HireDate = request.HireDate;
-        employee.Salary = request.Salary;
+        employee.FullName = command.UpdateEmployeeDto.FullName;
+        employee.BirthDate = command.UpdateEmployeeDto.BirthDate;
+        employee.HireDate = command.UpdateEmployeeDto.HireDate;
+        employee.Salary = command.UpdateEmployeeDto.Salary;
         employee.DepartmentId = department?.Id ?? employee.DepartmentId;
         
         await employeesRepository.SaveAsync(employee, cancellationToken);
         
-        logger.LogInformation("Employee updated with id: {employeeId}", employeeId);
+        logger.LogInformation("Employee updated with id: {employeeId}", command.EmployeeId);
         
-        return employee;
+        return command.EmployeeId;
     }
 }

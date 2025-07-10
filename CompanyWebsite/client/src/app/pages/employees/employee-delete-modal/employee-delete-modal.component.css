@@ -1,0 +1,8 @@
+.modal-header {
+  border-top-left-radius: 0.3rem;
+  border-top-right-radius: 0.3rem;
+}
+
+.btn-close-white {
+  filter: invert(1) grayscale(100%) brightness(200%);
+} 

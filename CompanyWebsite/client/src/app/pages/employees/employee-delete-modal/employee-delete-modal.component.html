@@ -1,0 +1,12 @@
+<div class="modal-header bg-danger text-white">
+  <h4 class="modal-title">Подтверждение удаления</h4>
+  <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="cancel()"></button>
+</div>
+<div class="modal-body">
+  <p>Вы действительно хотите удалить сотрудника <strong>{{ employee.fullName }}</strong>?</p>
+  <p class="text-danger">Это действие нельзя отменить.</p>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="cancel()">Отмена</button>
+  <button type="button" class="btn btn-danger" (click)="confirm()">Удалить</button>
+</div> 

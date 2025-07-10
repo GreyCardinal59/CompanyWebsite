@@ -9,4 +9,9 @@ public class EmployeeNotFoundException : NotFoundException
         : base(errors)
     {
     }
+    
+    public EmployeeNotFoundException(Guid employeeId)
+        : base(new[] { Errors.General.NotFound(employeeId) })
+    {
+    }
 }

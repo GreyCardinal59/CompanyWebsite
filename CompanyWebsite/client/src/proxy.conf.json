@@ -1,0 +1,14 @@
+{
+  "/api/employees": {
+    "target": "http://localhost:5296",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/api/departments": {
+    "target": "http://localhost:5296",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  }
+} 

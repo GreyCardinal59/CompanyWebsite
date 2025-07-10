@@ -2,7 +2,9 @@ using CompanyWebsite.Application.Abstractions;
 using CompanyWebsite.Application.Employees;
 using CompanyWebsite.Application.Employees.Features.AddDepartment;
 using CompanyWebsite.Application.Employees.Features.CreateEmployee;
+using CompanyWebsite.Application.Employees.Features.DeleteEmployee;
 using CompanyWebsite.Application.Employees.Features.GetEmployees;
+using CompanyWebsite.Application.Employees.Features.UpdateEmployee;
 using CompanyWebsite.Contracts.Employees;
 using CompanyWebsite.Contracts.Employees.Dtos;
 using CompanyWebsite.Contracts.Employees.Responses;
@@ -12,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CompanyWebsite.Presenters.Employees;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class EmployeesController() : ControllerBase
 {
     [HttpPost]
@@ -47,15 +49,28 @@ public class EmployeesController() : ControllerBase
     }
 
     [HttpPut("{employeeId:guid}")]
-    public async Task<IActionResult> Update([FromRoute] Guid employeeId, [FromBody] UpdateEmployeeDto request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update(
+        [FromServices] ICommandHandler<Guid, UpdateEmployeeCommand> handler,
+        [FromRoute] Guid employeeId,
+        [FromBody] UpdateEmployeeDto request,
+        CancellationToken cancellationToken)
     {
-        return Ok("Employees is updated");
+        var command = new UpdateEmployeeCommand(employeeId, request);
+        
+        var result = await handler.Handle(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : Ok(result.Value);
     }
 
     [HttpDelete("{employeeId:guid}")]
-    public async Task<IActionResult> Delete([FromRoute] Guid employeeId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(
+        [FromServices] ICommandHandler<Guid, DeleteEmployeeCommand> handler,
+        [FromRoute] Guid employeeId,
+        CancellationToken cancellationToken)
     {
-        return Ok("Employee is deleted");
+        var command = new DeleteEmployeeCommand(employeeId);
+
+        var result = await handler.Handle(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : Ok(result.Value);
     }
     
     [HttpPost("{employeeId:guid}/departments")]
